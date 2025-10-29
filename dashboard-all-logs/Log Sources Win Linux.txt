@@ -1,0 +1,6 @@
+| tstats count by index source sourcetype host
+| search index IN ("*win*","*os*")
+| stats values(sourcetype) AS "sourcetype" by host, index 
+| sort + host
+| fields + host, index, sourcetype
+| outputlookup log_sources_os_win.csv

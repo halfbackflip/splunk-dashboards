@@ -1,0 +1,439 @@
+{
+  "visualizations": {
+    "viz_table_2": {
+      "type": "splunk.table",
+      "options": {
+        "count": 17,
+        "dataOverlayMode": "none",
+        "drilldown": "cell",
+        "percentagesRow": false,
+        "rowNumbers": false,
+        "totalsRow": false,
+        "wrap": true,
+        "headerVisibility": "fixed",
+        "columnFormat": {
+          "host": {
+            "data": "> table | seriesByName(\"host\") | formatByType(hostColumnFormatEditorConfig)",
+            "rowColors": "> table | seriesByName(\"host\") | pick(hostRowColorsEditorConfig)",
+            "rowBackgroundColors": "> table | seriesByName('host') | matchValue(hostRowBackgroundColorsEditorConfig)"
+          }
+        }
+      },
+      "dataSources": {
+        "primary": "ds_FVahHMTR"
+      },
+      "showProgressBar": true,
+      "title": "Windows / Unix Hosts",
+      "description": "Search logs source types and indexes available for an individual host",
+      "context": {
+        "hostColumnFormatEditorConfig": {
+          "string": {
+            "unitPosition": "after"
+          }
+        },
+        "hostRowColorsEditorConfig": [
+          "#15D4A1"
+        ],
+        "hostRowBackgroundColorsEditorConfig": [
+          {
+            "match": "",
+            "value": "#5C33FF"
+          }
+        ]
+      }
+    },
+    "viz_DULnyOtN": {
+      "type": "splunk.table",
+      "options": {
+        "dataOverlayMode": "none",
+        "drilldown": "cell",
+        "percentagesRow": false,
+        "rowNumbers": false,
+        "totalsRow": false,
+        "wrap": false,
+        "tableFormat": {
+          "headerBackgroundColor": "#007a68",
+          "headerColor": "#FFFFFF",
+          "rowBackgroundColors": "> table | seriesByIndex(0) | pick(tableAltRowBackgroundColorsByTheme)",
+          "align": "left"
+        },
+        "backgroundColor": "> themes.defaultBackgroundColor",
+        "columnFormat": {
+          "consumer": {
+            "width": 100,
+            "textOverflow": "ellipsis",
+            "data": "> table | seriesByName(\"consumer\") | formatByType(consumerColumnFormatEditorConfig)",
+            "rowColors": "> table | seriesByName(\"consumer\") | matchValue(consumerRowColorsEditorConfig)"
+          },
+          "index": {
+            "width": 165.25,
+            "data": "> table | seriesByName(\"index\") | formatByType(indexColumnFormatEditorConfig)",
+            "rowColors": "> table | seriesByName(\"index\") | pick(indexRowColorsEditorConfig)",
+            "rowBackgroundColors": "> table | seriesByName('index') | matchValue(indexRowBackgroundColorsEditorConfig)"
+          },
+          "index_description": {
+            "width": 325.3333333333333
+          },
+          "sourcetype": {
+            "width": 194.5
+          }
+        },
+        "headerVisibility": "fixed",
+        "count": 12
+      },
+      "dataSources": {
+        "primary": "ds_FWrxyA3P_ds_xmQcjN7F"
+      },
+      "title": "Indexes / Sourcetypes",
+      "context": {
+        "consumerColumnFormatEditorConfig": {
+          "string": {
+            "unitPosition": "after"
+          }
+        },
+        "consumerRowColorsEditorConfig": [
+          {
+            "match": "Corp1",
+            "value": "#874A07"
+          },
+          {
+            "match": "Corp2",
+            "value": "#089C9E"
+          }
+        ],
+        "indexColumnFormatEditorConfig": {
+          "string": {
+            "unitPosition": "after"
+          }
+        },
+        "indexRowColorsEditorConfig": [
+          "#15D4A1"
+        ],
+        "indexRowBackgroundColorsEditorConfig": [
+          {
+            "match": "",
+            "value": "#5C33FF"
+          }
+        ]
+      },
+      "description": "Search for all indexes and source types, excluding Unix logs."
+    },
+    "viz_UmEXWqcJ": {
+      "type": "splunk.table",
+      "title": "Datamodels by Index / Sourcetype",
+      "description": "Displays the datamodels by index and sourcetype",
+      "dataSources": {
+        "primary": "ds_Zm4nbhxY"
+      },
+      "options": {
+        "columnFormat": {
+          "modelName": {
+            "data": "> table | seriesByName(\"modelName\") | formatByType(modelNameColumnFormatEditorConfig)",
+            "rowColors": "> table | seriesByName(\"modelName\") | pick(modelNameRowColorsEditorConfig)",
+            "rowBackgroundColors": "> table | seriesByName('modelName') | matchValue(modelNameRowBackgroundColorsEditorConfig)"
+          }
+        },
+        "headerVisibility": "fixed"
+      },
+      "context": {
+        "modelNameColumnFormatEditorConfig": {
+          "string": {
+            "unitPosition": "after"
+          }
+        },
+        "modelNameRowColorsEditorConfig": [
+          "#15D4A1"
+        ],
+        "modelNameRowBackgroundColorsEditorConfig": [
+          {
+            "match": "",
+            "value": "#5C33FF"
+          }
+        ]
+      }
+    },
+    "viz_Eb6rnghk": {
+      "type": "splunk.bar",
+      "title": "Datamodels by Index / Sourcetype",
+      "description": "Displays the datamodels by index and sourcetype.",
+      "dataSources": {
+        "primary": "ds_ZtKqHNR8_ds_Zm4nbhxY"
+      },
+      "options": {
+        "stackMode": "stacked",
+        "legendDisplay": "bottom",
+        "yAxisLabelVisibility": "hide"
+      },
+      "context": {
+        "modelNameColumnFormatEditorConfig": {
+          "string": {
+            "unitPosition": "after"
+          }
+        },
+        "modelNameRowColorsEditorConfig": [
+          "#15D4A1"
+        ],
+        "modelNameRowBackgroundColorsEditorConfig": [
+          {
+            "match": "",
+            "value": "#5C33FF"
+          }
+        ]
+      },
+      "showProgressBar": false,
+      "showLastUpdated": false
+    }
+  },
+  "dataSources": {
+    "ds_search_2": {
+      "type": "ds.search",
+      "options": {
+        "query": "| inputlookup log_sources_os_win.csv\n| eval sourcetype=split(sourcetype, \" \")\n| search index IN (*) AND sourcetype IN (*) AND host IN (*)\n| sort + host\n| lookup index_description.csv index AS index OUTPUT index_description\n| lookup sourcetype_description.csv sourcetype AS sourcetype OUTPUT sourcetype_description\n| fillnull value=0\n| fields + host, index, sourcetype, index_description sourcetype_description",
+        "queryParameters": {
+          "earliest": "-24h@h",
+          "latest": "now"
+        }
+      },
+      "name": "log_sources_win_unix_v5"
+    },
+    "ds_uakEQ86o": {
+      "type": "ds.search",
+      "options": {
+        "queryParameters": {
+          "earliest": "-24h@h",
+          "latest": "now"
+        },
+        "query": "| inputlookup log_sources.csv\n| eval sourcetype=split(sourcetype, \" \")\n| search (index IN ($_index$) AND sourcetype IN ($_sourcetype$))\n| lookup index_description.csv index AS index OUTPUT index_description\n| lookup sourcetype_description.csv sourcetype AS sourcetype OUTPUT sourcetype_description\n| fillnull value=0\n| eval sourcetype_definition = mvzip(sourcetype, sourcetype_description, \" : \")\n| fields + consumer index index_description sourcetype sourcetype_description sourcetype_definition"
+      },
+      "name": "main_base_search_v5"
+    },
+    "ds_FVahHMTR": {
+      "type": "ds.chain",
+      "options": {
+        "extend": "ds_search_2",
+        "query": "| table host, index, sourcetype sourcetype_description"
+      },
+      "name": "win_unix_logs_v5"
+    },
+    "ds_aIFoVcza": {
+      "type": "ds.search",
+      "options": {
+        "queryParameters": {
+          "earliest": "-24h@h",
+          "latest": "now"
+        },
+        "query": "| inputlookup log_sources.csv\n| fields index\n| table index\n| eval index_escape=\"\\\"\".index.\"\\\"\"\n| sort - index"
+      },
+      "name": "index_multiselect_v5"
+    },
+    "ds_FWrxyA3P_ds_xmQcjN7F": {
+      "type": "ds.chain",
+      "options": {
+        "extend": "ds_uakEQ86o",
+        "query": "| table index index_description sourcetype sourcetype_description sourcetype_definition \n| stats values(index_description) as index_description values(sourcetype) as sourcetype values(sourcetype_definition) as sourcetype_definition by index"
+      },
+      "name": "log_sourcetypes_ex_win_unix_v5"
+    },
+    "ds_x7iC3LRn": {
+      "type": "ds.search",
+      "options": {
+        "queryParameters": {
+          "earliest": "-24h@h",
+          "latest": "now"
+        },
+        "query": "| inputlookup log_sources.csv\n| search index != \"os\"\n| eval sourcetype=split(sourcetype, \" \") \n| mvexpand sourcetype\n| fields sourcetype\n| table sourcetype\n| dedup sourcetype\n| eval sourcetype_escape=\"\\\"\".sourcetype.\"\\\"\"\n| sort - sourcetype"
+      },
+      "name": "sourcetype_multiselect_v5"
+    },
+    "ds_Zm4nbhxY": {
+      "type": "ds.search",
+      "options": {
+        "queryParameters": {
+          "earliest": "-24h@h",
+          "latest": "now"
+        },
+        "query": "| inputlookup dm_summary.csv\n| eval sourcetype=split(dm_sourcetype, \" \") \n| eval index=split(dm_index, \" \")\n| search (index IN ($_index$) AND sourcetype IN ($_sourcetype$))\n| table modelName, index, sourcetype"
+      },
+      "name": "dm_search_v5"
+    },
+    "ds_ZtKqHNR8_ds_Zm4nbhxY": {
+      "type": "ds.search",
+      "options": {
+        "queryParameters": {
+          "earliest": "-24h@h",
+          "latest": "now"
+        },
+        "query": "| inputlookup dm_summary.csv\r\n| eval sourcetype=split(dm_sourcetype, \" \") \r\n| eval index=split(dm_index, \" \")\r\n| search (index IN ($_index$) AND sourcetype IN ($_sourcetype$))\r\n| chart count by modelName, sourcetype limit=0"
+      },
+      "name": "dm_chart_v5"
+    }
+  },
+  "defaults": {
+    "visualizations": {
+      "splunk.table": {
+        "options": {
+          "tableFormat": {
+            "headerBackgroundColor": "#007a68",
+            "headerColor": "#FFFFFF",
+            "align": "left"
+          }
+        }
+      },
+      "splunk.singlevalue": {
+        "options": {
+          "majorColor": "#874A07"
+        }
+      }
+    },
+    "dataSources": {}
+  },
+  "inputs": {
+    "input_7iA80Wno": {
+      "options": {
+        "items": ">frame(label, value) | prepend(formattedStatics) | objects()",
+        "token": "_index",
+        "defaultValue": [
+          "*"
+        ]
+      },
+      "title": "Index",
+      "type": "input.multiselect",
+      "dataSources": {
+        "primary": "ds_aIFoVcza"
+      },
+      "context": {
+        "formattedConfig": {
+          "number": {
+            "prefix": ""
+          }
+        },
+        "formattedStatics": ">statics | formatByType(formattedConfig)",
+        "statics": [
+          [
+            "All"
+          ],
+          [
+            "*"
+          ]
+        ],
+        "label": ">primary | seriesByName(\"index\") | renameSeries(\"label\") | formatByType(formattedConfig)",
+        "value": ">primary | seriesByName(\"index_escape\") | renameSeries(\"value\") | formatByType(formattedConfig)"
+      }
+    },
+    "input_c883alj6": {
+      "options": {
+        "items": ">frame(label, value) | prepend(formattedStatics) | objects()",
+        "defaultValue": [
+          "*"
+        ],
+        "token": "_sourcetype"
+      },
+      "title": "Sourcetype",
+      "type": "input.multiselect",
+      "dataSources": {
+        "primary": "ds_x7iC3LRn"
+      },
+      "context": {
+        "formattedConfig": {
+          "number": {
+            "prefix": ""
+          }
+        },
+        "formattedStatics": ">statics | formatByType(formattedConfig)",
+        "statics": [
+          [
+            "All"
+          ],
+          [
+            "*"
+          ]
+        ],
+        "label": ">primary | seriesByName(\"sourcetype\") | renameSeries(\"label\") | formatByType(formattedConfig)",
+        "value": ">primary | seriesByName(\"sourcetype_escape\") | renameSeries(\"value\") | formatByType(formattedConfig)"
+      }
+    },
+    "input_VH5X6Drj": {
+      "options": {
+        "defaultValue": "*",
+        "token": "_host"
+      },
+      "title": "Host",
+      "type": "input.text"
+    }
+  },
+  "description": "Displays all log sources recorded over previous 7 days",
+  "title": "All Logs v5",
+  "applicationProperties": {
+    "hideEdit": false,
+    "hideExport": false,
+    "hideOpenInSearch": false
+  },
+  "layout": {
+    "tabs": {
+      "items": [
+        {
+          "layoutId": "layout_1",
+          "label": "New tab"
+        }
+      ]
+    },
+    "layoutDefinitions": {
+      "layout_1": {
+        "type": "grid",
+        "options": {
+          "height": 1000
+        },
+        "structure": [
+          {
+            "item": "viz_DULnyOtN",
+            "type": "block",
+            "position": {
+              "x": 0,
+              "y": 0,
+              "w": 600,
+              "h": 489
+            }
+          },
+          {
+            "item": "viz_Eb6rnghk",
+            "type": "block",
+            "position": {
+              "x": 0,
+              "y": 489,
+              "w": 1200,
+              "h": 662
+            }
+          },
+          {
+            "item": "viz_table_2",
+            "type": "block",
+            "position": {
+              "x": 0,
+              "y": 1151,
+              "w": 1200,
+              "h": 490
+            }
+          },
+          {
+            "item": "viz_UmEXWqcJ",
+            "type": "block",
+            "position": {
+              "x": 600,
+              "y": 0,
+              "w": 600,
+              "h": 489
+            }
+          }
+        ]
+      }
+    },
+    "globalInputs": [
+      "input_7iA80Wno",
+      "input_c883alj6",
+      "input_VH5X6Drj"
+    ],
+    "options": {
+      "submitButton": false
+    }
+  }
+}

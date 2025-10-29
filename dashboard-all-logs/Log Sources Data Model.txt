@@ -1,0 +1,8 @@
+| datamodel 
+| rex field=_raw "\"modelName\"\s*\:\s*\"(?<modelName>[^\"]+)\"" 
+| search NOT modelName IN (Splunk_CIM_Validation)
+| fields modelName 
+| table modelName 
+| map maxsearches=40 search="tstats summariesonly=true count from datamodel=$modelName$ by index sourcetype | eval modelName=\"$modelName$\"" 
+| stats values(index) as dm_index values(sourcetype) as dm_sourcetype by modelName
+| outputlookup dm_summary.csv

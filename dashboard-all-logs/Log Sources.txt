@@ -1,0 +1,4 @@
+| tstats values(sourcetype) as sourcetype by index
+| fields + index sourcetype
+| sort - consumer, index
+| outputlookup log_sources.csv
